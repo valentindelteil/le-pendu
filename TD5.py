@@ -166,7 +166,7 @@ class FenetrePrincipale(Tk):
            
            
         if self.__count2==0:#Victoire si mot trouvé
-            L=[self.__motHazard,', VICTOIRE']
+            L=[self.__motHazard,'VICTOIRE']
             self.__Label.config(text = L) 
             
     def triche(self):
