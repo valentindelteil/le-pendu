@@ -121,18 +121,18 @@ class FenetrePrincipale(Tk):
         self.Motcaché=[]
         for i in range(len(self.__motHazard)):#On remplace les lettres du mot par des étoiles
                        self.Motcaché.append('*')
+        
+        #Initialisation de tous les artefacts
         self.__Label.config(text = self.Motcaché)#Initialistion des label avec le mot en *
         self.__AfficheScore.config(text = 'Score = 1000',fg='black')#Initialisation du Score à 1000
-       
+        self.__Saisie.config(state=NORMAL)
         for b in self.__boutons:#On affiche les boutons
             b.config(state=NORMAL)
         for b in self.DessinPendu.ListeForme:#On cache l'image du pendu 
             b.setState("hidden") 
-<<<<<<< HEAD
 
-=======
-        self.__Boutontriche.config(command=self.triche)# Activation du bouton triche
->>>>>>> 8e8600b107ced5b26298c8f301c89ffd91cd9da1
+        
+
         self.__triche=False
         self.__count=0#initialisation du nombre de tentatives
         self.__count2=len(self.__motHazard)#Initialisation du nombre de lettres à trouver
@@ -164,34 +164,37 @@ class FenetrePrincipale(Tk):
            self.__AfficheScore.config(text='Score: 0 PERDU')
            for b in self.__boutons:#On affiche les boutons
                 b.config(state=DISABLED)   
-           self.__Boutontriche(state=DISABLED)
+           
            
            
         if self.__count2==0:#Victoire si mot trouvé
             L=[self.__motHazard,'VICTOIRE']
             self.__Label.config(text = L) 
             
-    def triche(self,event):
-        self.configure(bg='black')
-        self.__AfficheScore.config(text = f'TRICHE ACTIVEE >:)   Score: {self.__score}',fg='red')
-        self.__Boutontriche.config(bg='black', fg='red')
-         #premet de ne pas perdre avec la triche   
+    def triche(self,event):#Mode triche, qui permet en appyant sur le bouton down de revenir en arrière         
+        if self.__count>0 : self.__count-=1 #Le count ne dois pas devenir négatif
         self.DessinPendu.ListeForme[self.__count].setState("hidden")
-        if self.__count>0 : self.__count-=1
+        
         self.__score+=100
         if self.__score>1000 : self.__score=1000#le score ne peut pas exéder 1000
-        
-<<<<<<< HEAD
+
     def SaisieTriche(self,event):
-        print('LO')
+   
+        #Vérification du code triche puis activation du mode triche 
         self.__entree = self.__Saisie.get()
         if self.__entree=='TRICHE':
             self.__triche=True
             self.bind('<Down>', self.triche)
+            
+            #Activation de l'interface "TRICHE"
+            self.configure(bg='black')
+            self.f1.configure(bg='black')
+            self.f2.configure(bg='black')
+            self.f3.configure(bg='black')
+            self.__Saisie=Entry(self.f2,bg='black',fg='red')
+            self.__AfficheScore.config(text = f'TRICHE ACTIVEE >:)   Score: {self.__score}',fg='red',bg='black')
             print('Youpi')
-    #SAlut
-=======
-        
+
     def creerMenuBar(self):
         menuBar=Menu(self)
         menuColors = Menu(menuBar, tearoff=0)
@@ -209,13 +212,12 @@ class FenetrePrincipale(Tk):
         self.configure(bg=couleur1)
         self.f2.configure(bg=couleur1)
         self.f1.configure(bg=couleur1)
-        self.__Boutontriche.configure(bg=couleur1, fg=couleur1)
+        
         self.DessinPendu.config(bg=couleur2)
         
 
 
 
->>>>>>> 8e8600b107ced5b26298c8f301c89ffd91cd9da1
     def __init__(self):
         Tk.__init__(self)
         self.title('Jeu du pendu')
@@ -245,46 +247,48 @@ class FenetrePrincipale(Tk):
         self.DessinPendu = ZoneAffichage(self, 250, 250)
         self.DessinPendu.pack(side=TOP, padx=15, pady=5)
         self.DessinPendu.configure(bg="#E6BBAD")
-        
-        #Bouton triche
-        self.__Boutontriche = Button(self,text='>:)',fg='lightblue',bg='lightblue',bd=0,activebackground='white',activeforeground='red')
-        self.__Boutontriche.pack(side=BOTTOM,padx=0,pady=0) 
-    
-        self.__Saisie=Entry(self,bg='lightblue',bd=0)
-        self.__Saisie.pack(side=BOTTOM)
-        
+
        # Frame secondaire n° 2, calvier
         self.f2 = Frame(self) 
         self.f2.configure(bg="lightblue")
-        self.f2.pack(side = BOTTOM)
+        self.f2.pack(side = TOP)
         #la frame contenant les lettres du clavier
         #et le label du mot cherché et le score
-        self.__AfficheScore = Label(self, text = 'Jeu du pendu')
+        self.__AfficheScore = Label(self.f2, text = 'Jeu du pendu')
         self.__AfficheScore.pack(side=TOP,padx=15,pady=2)  
         
         #label du mot cherché
-        self.__Label = Label(self,text = 'Cliquez sur Nouvelle Partie pour jouer' )
+        self.__Label = Label(self.f2,text = 'Cliquez sur Nouvelle Partie pour jouer' )
         self.__Label.pack(side=TOP,padx=15,pady=10)   
+    
+        self.__Saisie=Entry(self.f2,bg='lightblue',bd=0,state=DISABLED)
+        self.__Saisie.pack(side=BOTTOM)
+        
+        self.f3 = Frame(self)
+        self.f3.configure(bg="lightblue")
+        self.f3.pack(side = TOP)
+        
+    
         
         
         count=0 #Mise en place d'un compteur pour pouvoir utiliser l'aide de l'énoncé
         self.__boutons = []
         for i in range(3):#Clavier à travers une grille
             for j in range(7):
-                boutonLettre = MonBoutonLettre(self.f2, self,chr(ord('A')+count))
+                boutonLettre = MonBoutonLettre(self.f3, self,chr(ord('A')+count))
                 boutonLettre.config(state=DISABLED)
                 count+=1
                 self.__boutons.append(boutonLettre)
                 boutonLettre.grid(row=i,column=j,padx=2, pady=2)
         for a in range(1,6):
-            boutonLettre = MonBoutonLettre(self.f2,self, chr(ord('U')+ a))
+            boutonLettre = MonBoutonLettre(self.f3,self, chr(ord('U')+ a))
             boutonLettre.config(state=DISABLED)
             self.__boutons.append(boutonLettre)
             boutonLettre.grid(row=4,column=a)
             
         
         
-        
+
         
 class MonBoutonLettre(Button):#création d'une classe 
     def __init__(self,parent,fenetre,lettre):
@@ -308,9 +312,11 @@ class Couleur: #Création de la classe couleur
         
 
 
-            
 if __name__ == '__main__':
-	fen = FenetrePrincipale()
-	fen.mainloop()
+	fen = FenetrePrincipale()  
+fen.geometry('300x550')
+fen.mainloop()            
+
+    
     
 
