@@ -181,12 +181,14 @@ class FenetrePrincipale(Tk):
     def creerMenuBar(self):
         menuBar=Menu(self)
         menuColors = Menu(menuBar, tearoff=0)
-        couleur=Couleur(self,"lightblue","#E6BBAD") #Deux couleurs complémentaires qui vont très bien ensemble
+        couleur=Couleur(self,"lightblue","#E6BBAD") #couleurs complémentaires
         menuColors.add_command(label="Bleu ciel et Saumon", command=couleur.clique)
-        couleur=Couleur(self,"#FFD700","#0026FF")
-        menuColors.add_command(label="Or et Bleu", command=couleur.clique)
-        couleur=Couleur(self,"#FF6347","#47E3FF") #Deux couleurs complémentaires qui vont très bien ensemble
+        couleur=Couleur(self,"#FFD700","#ff5700") # couleurs analogues
+        menuColors.add_command(label="Or et Rouge", command=couleur.clique)
+        couleur=Couleur(self,"#FF6347","#47E3FF") #couleurs complémentaires
         menuColors.add_command(label="Rouge et Bleu", command=couleur.clique)
+        couleur=Couleur(self,"#98fb98","#cafb98") # couleurs analogues
+        menuColors.add_command(label="Vert", command=couleur.clique)
         self.config(menu=menuColors)
 
     def change_couleur(self,couleur1,couleur2):
