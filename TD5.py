@@ -108,6 +108,8 @@ class ZoneAffichage(Canvas):
 
 class FenetrePrincipale(Tk): 
     
+    
+    
     def chargeMots(self):# Charge la liste de mots du fichier mots.txt
         f = open('mots.txt', 'r')
         s = f.read()
@@ -128,10 +130,8 @@ class FenetrePrincipale(Tk):
             b.config(state=NORMAL)
         for b in self.DessinPendu.ListeForme:#On cache l'image du pendu 
             b.setState("hidden") 
-        self.__Boutontriche.config(command=self.triche,bg='lightblue',fg='lightblue')# Activation du bouton triche
+
         self.__triche=False
-    
-    
         self.__count=0#initialisation du nombre de tentatives
         self.__count2=len(self.__motHazard)#Initialisation du nombre de lettres à trouver
         self.__score=1000
@@ -169,24 +169,31 @@ class FenetrePrincipale(Tk):
             L=[self.__motHazard,', VICTOIRE']
             self.__Label.config(text = L) 
             
-    def triche(self):
+    def triche(self,event):
         self.configure(bg='black')
         self.__AfficheScore.config(text = f'TRICHE ACTIVEE >:)   Score: {self.__score}',fg='red')
         self.__Boutontriche.config(bg='black', fg='red')
-        self.__triche=True #premet de ne pas perdre avec la triche   
+         #premet de ne pas perdre avec la triche   
         self.DessinPendu.ListeForme[self.__count].setState("hidden")
         if self.__count>0 : self.__count-=1
         self.__score+=100
         if self.__score>1000 : self.__score=1000#le score ne peut pas exéder 1000
         
-        
+    def SaisieTriche(self,event):
+        print('LO')
+        self.__entree = self.__Saisie.get()
+        if self.__entree=='TRICHE':
+            self.__triche=True
+            self.bind('<Down>', self.triche)
+            print('Youpi')
+    #SAlut
     def __init__(self):
         Tk.__init__(self)
         self.title('Jeu du pendu')
         self.configure(bg='lightblue') #frame principale
         self.chargeMots()
-
-    
+        self.__triche=False
+        self.bind('<Down>', self.SaisieTriche)
         #________ INTERFACE __________#
         
         
@@ -212,8 +219,8 @@ class FenetrePrincipale(Tk):
         self.__Boutontriche = Button(self,text='>:)',fg='lightblue',bg='lightblue',bd=0,activebackground='white',activeforeground='red')
         self.__Boutontriche.pack(side=BOTTOM,padx=0,pady=0) 
     
-        
-       
+        self.__Saisie=Entry(self,bg='lightblue',bd=0)
+        self.__Saisie.pack(side=BOTTOM)
         
        # Frame secondaire n° 2, calvier
         f2 = Frame(self) 
@@ -244,8 +251,9 @@ class FenetrePrincipale(Tk):
             self.__boutons.append(boutonLettre)
             boutonLettre.grid(row=4,column=a)
             
-
-  
+        
+        
+        
         
 class MonBoutonLettre(Button):#création d'une classe 
     def __init__(self,parent,fenetre,lettre):
