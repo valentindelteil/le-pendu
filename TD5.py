@@ -92,7 +92,6 @@ class Ellipse(Forme):
 class ZoneAffichage(Canvas):
     def __init__(self, parent, largeur, hauteur):
         Canvas.__init__(self, parent, width=largeur, height=hauteur)
-        self.configure(bg="white")
         self.ListeForme=[]       
         self.ListeForme.append(Rectangle(self, 0,  237, 270,  15, "lemon chiffon"))
         self.ListeForme.append(Rectangle(self, 87,   55,  15, 200, "sienna4"))
@@ -116,7 +115,6 @@ class FenetrePrincipale(Tk):
     
         
     def NouvellePartie(self):
-        self.configure(bg='lightblue')
         self.__motHazard = choice(self.__mots) # Choix au hasard du mot caché
         self.Motcaché=[]
         for i in range(len(self.__motHazard)):#On remplace les lettres du mot par des étoiles
@@ -128,7 +126,7 @@ class FenetrePrincipale(Tk):
             b.config(state=NORMAL)
         for b in self.DessinPendu.ListeForme:#On cache l'image du pendu 
             b.setState("hidden") 
-        self.__Boutontriche.config(command=self.triche,bg='lightblue',fg='lightblue')# Activation du bouton triche
+        self.__Boutontriche.config(command=self.triche)# Activation du bouton triche
         self.__triche=False
     
     
@@ -180,9 +178,31 @@ class FenetrePrincipale(Tk):
         if self.__score>1000 : self.__score=1000#le score ne peut pas exéder 1000
         
         
+    def creerMenuBar(self):
+        menuBar=Menu(self)
+        menuColors = Menu(menuBar, tearoff=0)
+        couleur=Couleur(self,"lightblue","#E6BBAD") #Deux couleurs complémentaires qui vont très bien ensemble
+        menuColors.add_command(label="Bleu ciel et Saumon", command=couleur.clique)
+        couleur=Couleur(self,"#FFD700","#0026FF")
+        menuColors.add_command(label="Or et Bleu", command=couleur.clique)
+        couleur=Couleur(self,"#FF6347","#47E3FF") #Deux couleurs complémentaires qui vont très bien ensemble
+        menuColors.add_command(label="Rouge et Bleu", command=couleur.clique)
+        self.config(menu=menuColors)
+
+    def change_couleur(self,couleur1,couleur2):
+        self.configure(bg=couleur1)
+        self.f2.configure(bg=couleur1)
+        self.f1.configure(bg=couleur1)
+        self.__Boutontriche.configure(bg=couleur1, fg=couleur1)
+        self.DessinPendu.config(bg=couleur2)
+        
+
+
+
     def __init__(self):
         Tk.__init__(self)
         self.title('Jeu du pendu')
+        self.creerMenuBar()
         self.configure(bg='lightblue') #frame principale
         self.chargeMots()
 
@@ -191,15 +211,15 @@ class FenetrePrincipale(Tk):
         
         
         #frame secondaire n°1
-        f1=Frame(self)
-        f1.configure(bg ='grey')
-        f1.pack(side = TOP)
+        self.f1=Frame(self)
+        self.f1.configure(bg ='lightblue')
+        self.f1.pack(side = TOP, pady=5)
         
-        BoutonNewPartie = Button(f1,text="Nouvelle Partie")
+        BoutonNewPartie = Button(self.f1,text="Nouvelle Partie")
         BoutonNewPartie.pack(side=LEFT,padx=5, pady=2)
         BoutonNewPartie.config(command=self.NouvellePartie)
         
-        BoutonQuitter = Button(f1, text = "Quitter")
+        BoutonQuitter = Button(self.f1, text = "Quitter")
         BoutonQuitter.pack(side=LEFT, padx=5, pady=2)
         BoutonQuitter.config(command=self.destroy)
         
@@ -207,6 +227,7 @@ class FenetrePrincipale(Tk):
         #Creation du canevas
         self.DessinPendu = ZoneAffichage(self, 250, 250)
         self.DessinPendu.pack(side=TOP, padx=15, pady=5)
+        self.DessinPendu.configure(bg="#E6BBAD")
         
         #Bouton triche
         self.__Boutontriche = Button(self,text='>:)',fg='lightblue',bg='lightblue',bd=0,activebackground='white',activeforeground='red')
@@ -216,9 +237,9 @@ class FenetrePrincipale(Tk):
        
         
        # Frame secondaire n° 2, calvier
-        f2 = Frame(self) 
-        f2.configure(bg="grey")
-        f2.pack(side = BOTTOM)
+        self.f2 = Frame(self) 
+        self.f2.configure(bg="lightblue")
+        self.f2.pack(side = BOTTOM)
         #la frame contenant les lettres du clavier
         #et le label du mot cherché et le score
         self.__AfficheScore = Label(self, text = 'Jeu du pendu')
@@ -233,13 +254,13 @@ class FenetrePrincipale(Tk):
         self.__boutons = []
         for i in range(3):#Clavier à travers une grille
             for j in range(7):
-                boutonLettre = MonBoutonLettre(f2, self,chr(ord('A')+count))
+                boutonLettre = MonBoutonLettre(self.f2, self,chr(ord('A')+count))
                 boutonLettre.config(state=DISABLED)
                 count+=1
                 self.__boutons.append(boutonLettre)
                 boutonLettre.grid(row=i,column=j,padx=2, pady=2)
         for a in range(1,6):
-            boutonLettre = MonBoutonLettre(f2,self, chr(ord('U')+ a))
+            boutonLettre = MonBoutonLettre(self.f2,self, chr(ord('U')+ a))
             boutonLettre.config(state=DISABLED)
             self.__boutons.append(boutonLettre)
             boutonLettre.grid(row=4,column=a)
@@ -258,6 +279,15 @@ class MonBoutonLettre(Button):#création d'une classe
         print(ord(self.__lettre))
         return self.__fenetre.traitement(self.__lettre)
 
+
+class Couleur: #Création de la classe couleur
+    def __init__(self,fenetre,couleur1,couleur2):
+        self.__fenetre=fenetre
+        self.__couleur1=couleur1
+        self.__couleur2=couleur2
+    def clique(self):
+        self.__fenetre.change_couleur(self.__couleur1,self.__couleur2)
+        
 
 
             
