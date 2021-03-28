@@ -131,7 +131,9 @@ class FenetrePrincipale(Tk):
         for b in self.DessinPendu.ListeForme:#On cache l'image du pendu 
             b.setState("hidden") 
 
-        self.__triche=False#Initialisation de la triche
+        
+
+        self.__triche=False
         self.__count=0#initialisation du nombre de tentatives
         self.__count2=len(self.__motHazard)#Initialisation du nombre de lettres à trouver
         self.__score=1000
@@ -166,17 +168,9 @@ class FenetrePrincipale(Tk):
            
            
         if self.__count2==0:#Victoire si mot trouvé
-            L=[self.__motHazard,'VICTOIRE ']
+            L=[self.__motHazard,'VICTOIRE']
             self.__Label.config(text = L) 
-            self.__AfficheScore.config(text=f'Score: {self.__score} Saisissez votre Pseudo et appuyez sur Enter')
-            self.__Saisie.config(bg='grey',bd=2)
-            self.bind('<Down>', self.getPseudo)
-    
-    
-    def getPseudo(self,event): 
-        self.__Pseudo = self.__Saisie.get()
-        print(self.__Pseudo)
-        
+            
     def triche(self,event):#Mode triche, qui permet en appyant sur le bouton down de revenir en arrière         
         if self.__count>0 : self.__count-=1 #Le count ne dois pas devenir négatif
         self.DessinPendu.ListeForme[self.__count].setState("hidden")
@@ -198,12 +192,13 @@ class FenetrePrincipale(Tk):
             self.f2.configure(bg='black')
             self.f3.configure(bg='black')
             self.__Saisie=Entry(self.f2,bg='black',fg='red')
-            self.__AfficheScore.config(text = f'TRICHE ACTIVEE >:)   Score: {self.__score}',fg='red',bg='black')
+            self.__AfficheScore.config(text = f'TRICHE ACTIVEE >:)  \n Score: {self.__score}',fg='red',bg='black')
             print('Youpi')
 
-    def creerMenuBar(self):
+    def creerMenuBar(self): # création d'un menu couleur
         menuBar=Menu(self)
         menuColors = Menu(menuBar, tearoff=0)
+        menuBar.add_cascade(label="Couleurs", menu=menuColors)
         couleur=Couleur(self,"lightblue","#E6BBAD") #couleurs complémentaires
         menuColors.add_command(label="Bleu ciel et Saumon", command=couleur.clique)
         couleur=Couleur(self,"#FFD700","#ff5700") # couleurs analogues
@@ -212,13 +207,14 @@ class FenetrePrincipale(Tk):
         menuColors.add_command(label="Rouge et Bleu", command=couleur.clique)
         couleur=Couleur(self,"#98fb98","#cafb98") # couleurs analogues
         menuColors.add_command(label="Vert", command=couleur.clique)
-        self.config(menu=menuColors)
+        self.config(menu=menuBar)
 
     def change_couleur(self,couleur1,couleur2):
         self.configure(bg=couleur1)
         self.f2.configure(bg=couleur1)
         self.f1.configure(bg=couleur1)
-        
+        self.__Saisie.configure(bg=couleur1)
+        self.f3.configure(bg=couleur1)
         self.DessinPendu.config(bg=couleur2)
         
 
@@ -232,9 +228,6 @@ class FenetrePrincipale(Tk):
         self.chargeMots()
         self.__triche=False
         self.bind('<Down>', self.SaisieTriche)
-        
-        
-        
         #________ INTERFACE __________#
         
         
@@ -257,7 +250,7 @@ class FenetrePrincipale(Tk):
         self.DessinPendu.pack(side=TOP, padx=15, pady=5)
         self.DessinPendu.configure(bg="#E6BBAD")
 
-       # Frame secondaire n° 2, Entrée de la triche, affichage score et mot
+       # Frame secondaire n° 2, calvier
         self.f2 = Frame(self) 
         self.f2.configure(bg="lightblue")
         self.f2.pack(side = TOP)
@@ -269,17 +262,18 @@ class FenetrePrincipale(Tk):
         #label du mot cherché
         self.__Label = Label(self.f2,text = 'Cliquez sur Nouvelle Partie pour jouer' )
         self.__Label.pack(side=TOP,padx=15,pady=10)   
-        
-        #Entrée pour le code triche et le pseudo en fin de partie 
-        self.__Saisie=Entry(self.f2,bg='lightblue',bd=0,state=DISABLED)
+    
+        self.__Saisie=Entry(self.f2,bd=0,state=DISABLED)
+        self.__Saisie.config(bg='lightblue')
         self.__Saisie.pack(side=BOTTOM)
         
-        
-        #Frame 3, clavier
         self.f3 = Frame(self)
         self.f3.configure(bg="lightblue")
         self.f3.pack(side = TOP)
-
+        
+    
+        
+        
         count=0 #Mise en place d'un compteur pour pouvoir utiliser l'aide de l'énoncé
         self.__boutons = []
         for i in range(3):#Clavier à travers une grille
@@ -319,27 +313,7 @@ class Couleur: #Création de la classe couleur
     def clique(self):
         self.__fenetre.change_couleur(self.__couleur1,self.__couleur2)
         
-#____________________ BDD des Joueurs_________________#
-class Joueurs: 
-    def __init__(self):
-        self.__conn = sqlite3.connect('Joueurs.db')#Le init ouvre l'accès à la base. 
-        self.__curseur = self.__conn.cursor()                
 
-    def __del__(self):
-        self.__conn.close()
-        
-    def AjouteJoueur(self):
-        nom = getnom()
-        #ID = int(nom[i]*10**i for i in range(4)) #L'ID du joueur correspond aux quatres premières lettres de son Pseudo
-        pass
-        self.__curseur.execute(f"INSERT INTO Joueurs (PSEUDO,Id_Joueurs) VALUES({nom},{ID}")
-        self.__conn.commit()
-    
-    def getnom(self):
-        return fen.__Pseudo
-        
-    def getinfo(self):
-        return fen.__score, fen.__motHazard
 
 if __name__ == '__main__':
 	fen = FenetrePrincipale()  
