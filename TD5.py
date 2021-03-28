@@ -119,12 +119,21 @@ class FenetrePrincipale(Tk):
     def NouvellePartie(self):
         self.__motHazard = choice(self.__mots) # Choix au hasard du mot caché
         self.Motcaché=[]
+        
         for i in range(len(self.__motHazard)):#On remplace les lettres du mot par des étoiles
                        self.Motcaché.append('*')
         
+        self.configure(bg=self.couleur1)
+        self.f2.configure(bg=self.couleur1)
+        self.f1.configure(bg=self.couleur1)
+        self.__Saisie.configure(bg=self.couleur1)
+        self.f3.configure(bg=self.couleur1)
+        self.__Saisie.config(disabledbackground=self.couleur1)
+        self.DessinPendu.config(bg=self.couleur2)
+        
         #Initialisation de tous les artefacts
         self.__Label.config(text = self.Motcaché)#Initialistion des label avec le mot en *
-        self.__AfficheScore.config(text = 'Score = 1000',fg='black')#Initialisation du Score à 1000
+        self.__AfficheScore.config(text = 'Score = 1000',fg='black',bg='white')#Initialisation du Score à 1000
         self.__Saisie.config(state=NORMAL)
         for b in self.__boutons:#On affiche les boutons
             b.config(state=NORMAL)
@@ -225,6 +234,8 @@ class FenetrePrincipale(Tk):
         Tk.__init__(self)
         self.title('Jeu du pendu')
         self.creerMenuBar()
+        self.couleur1='lightblue'
+        self.couleur2='#E6BBAD'
         self.configure(bg='lightblue') #frame principale
         self.chargeMots()
         self.__triche=False
@@ -314,6 +325,8 @@ class Couleur: #Création de la classe couleur
         self.__couleur2=couleur2
     def clique(self):
         self.__fenetre.change_couleur(self.__couleur1,self.__couleur2)
+        self.__fenetre.couleur1=self.__couleur1
+        self.__fenetre.couleur2=self.__couleur2
         
 #____________________ BDD des Joueurs_________________#
 class Joueurs: 
