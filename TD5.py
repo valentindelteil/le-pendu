@@ -198,6 +198,7 @@ class FenetrePrincipale(Tk):
     def creerMenuBar(self):
         menuBar=Menu(self)
         menuColors = Menu(menuBar, tearoff=0)
+        menuBar.add_cascade(label="Couleurs", menu=menuColors)
         couleur=Couleur(self,"lightblue","#E6BBAD") #couleurs complémentaires
         menuColors.add_command(label="Bleu ciel et Saumon", command=couleur.clique)
         couleur=Couleur(self,"#FFD700","#ff5700") # couleurs analogues
@@ -206,13 +207,14 @@ class FenetrePrincipale(Tk):
         menuColors.add_command(label="Rouge et Bleu", command=couleur.clique)
         couleur=Couleur(self,"#98fb98","#cafb98") # couleurs analogues
         menuColors.add_command(label="Vert", command=couleur.clique)
-        self.config(menu=menuColors)
+        self.config(menu=menuBar)
 
     def change_couleur(self,couleur1,couleur2):
         self.configure(bg=couleur1)
         self.f2.configure(bg=couleur1)
         self.f1.configure(bg=couleur1)
-        
+        self.__Saisie.configure(bg=couleur1)
+        self.f3.configure(bg=couleur1)
         self.DessinPendu.config(bg=couleur2)
         
 
@@ -261,7 +263,8 @@ class FenetrePrincipale(Tk):
         self.__Label = Label(self.f2,text = 'Cliquez sur Nouvelle Partie pour jouer' )
         self.__Label.pack(side=TOP,padx=15,pady=10)   
     
-        self.__Saisie=Entry(self.f2,bg='lightblue',bd=0,state=DISABLED)
+        self.__Saisie=Entry(self.f2,bd=0,state=DISABLED)
+        self.__Saisie.config(bg='lightblue')
         self.__Saisie.pack(side=BOTTOM)
         
         self.f3 = Frame(self)
