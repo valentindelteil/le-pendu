@@ -313,7 +313,27 @@ class Couleur: #Création de la classe couleur
     def clique(self):
         self.__fenetre.change_couleur(self.__couleur1,self.__couleur2)
         
+#____________________ BDD des Joueurs_________________#
+class Joueurs: 
+    def __init__(self):
+        self.__conn = sqlite3.connect('Joueurs.db')#Le init ouvre l'accès à la base. 
+        self.__curseur = self.__conn.cursor()                
 
+    def __del__(self):
+        self.__conn.close()
+        
+    def AjouteJoueur(self):
+        nom = getnom()
+        #ID = int(nom[i]*10**i for i in range(4)) #L'ID du joueur correspond aux quatres premières lettres de son Pseudo
+        pass
+        self.__curseur.execute(f"INSERT INTO Joueurs (PSEUDO,Id_Joueurs) VALUES({nom},{ID}")
+        self.__conn.commit()
+    
+    def getnom(self):
+        return fen.__Pseudo
+        
+    def getinfo(self):
+        return fen.__score, fen.__motHazard
 
 if __name__ == '__main__':
 	fen = FenetrePrincipale()  
