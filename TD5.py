@@ -192,10 +192,10 @@ class FenetrePrincipale(Tk):
             self.f2.configure(bg='black')
             self.f3.configure(bg='black')
             self.__Saisie=Entry(self.f2,bg='black',fg='red')
-            self.__AfficheScore.config(text = f'TRICHE ACTIVEE >:)   Score: {self.__score}',fg='red',bg='black')
+            self.__AfficheScore.config(text = f'TRICHE ACTIVEE >:)  \n Score: {self.__score}',fg='red',bg='black')
             print('Youpi')
 
-    def creerMenuBar(self):
+    def creerMenuBar(self): # création d'un menu couleur
         menuBar=Menu(self)
         menuColors = Menu(menuBar, tearoff=0)
         menuBar.add_cascade(label="Couleurs", menu=menuColors)
