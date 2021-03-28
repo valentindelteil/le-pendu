@@ -122,7 +122,7 @@ class FenetrePrincipale(Tk):
         
         for i in range(len(self.__motHazard)):#On remplace les lettres du mot par des étoiles
                        self.Motcaché.append('*')
-        
+        #Initialisation de l'interface
         self.configure(bg=self.couleur1)
         self.f2.configure(bg=self.couleur1)
         self.f1.configure(bg=self.couleur1)
@@ -139,10 +139,12 @@ class FenetrePrincipale(Tk):
             b.config(state=NORMAL)
         for b in self.DessinPendu.ListeForme:#On cache l'image du pendu 
             b.setState("hidden") 
-
-        
-
+       
+        #Initialisation du mode triche
         self.__triche=False
+        self.bind('<Down>', self.SaisieTriche)
+        
+        
         self.__count=0#initialisation du nombre de tentatives
         self.__count2=len(self.__motHazard)#Initialisation du nombre de lettres à trouver
         self.__score=1000
@@ -193,7 +195,7 @@ class FenetrePrincipale(Tk):
         self.__entree = self.__Saisie.get()
         if self.__entree=='TRICHE':
             self.__triche=True
-            self.bind('<Down>', self.triche)
+            self.bind('<Down>', self.triche)#La touche down fait maintenant appel à triche ce qui enlève un trait 
             
             #Activation de l'interface "TRICHE"
             self.configure(bg='black')
@@ -201,8 +203,7 @@ class FenetrePrincipale(Tk):
             self.f2.configure(bg='black')
             self.f3.configure(bg='black')
             self.__Saisie=Entry(self.f2,bg='black',fg='red')
-            self.__AfficheScore.config(text = f'TRICHE ACTIVEE >:)  \n Score: {self.__score}',fg='red',bg='black')
-            print('Youpi')
+
 
     def creerMenuBar(self): # création d'un menu couleur
         menuBar=Menu(self)
@@ -239,7 +240,7 @@ class FenetrePrincipale(Tk):
         self.configure(bg='lightblue') #frame principale
         self.chargeMots()
         self.__triche=False
-        self.bind('<Down>', self.SaisieTriche)
+        self.bind('<Down>', self.SaisieTriche)#Down appelle SaisieTriche qui vérifie la validité du code triche
         #________ INTERFACE __________#
         
         
@@ -274,11 +275,13 @@ class FenetrePrincipale(Tk):
         #label du mot cherché
         self.__Label = Label(self.f2,text = 'Cliquez sur Nouvelle Partie pour jouer' )
         self.__Label.pack(side=TOP,padx=15,pady=10)   
-    
+        
+        #Saisie de la triche 
         self.__Saisie=Entry(self.f2,bd=0,state=DISABLED)
         self.__Saisie.config(disabledbackground='lightblue')
         self.__Saisie.config(bg='lightblue')
         self.__Saisie.pack(side=BOTTOM)
+        
         
         self.f3 = Frame(self)
         self.f3.configure(bg="lightblue")
