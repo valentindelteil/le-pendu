@@ -241,9 +241,9 @@ class FenetrePrincipale(Tk):
         self.chargeMots()
         self.__triche=False
         self.bind('<Down>', self.SaisieTriche)#Down appelle SaisieTriche qui vérifie la validité du code triche
-        #________ INTERFACE __________#
         
         
+        #______________________ INTERFACE _____________________________#
         #frame secondaire n°1
         self.f1=Frame(self)
         self.f1.configure(bg ='lightblue')
