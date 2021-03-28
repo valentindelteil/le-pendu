@@ -180,7 +180,15 @@ class FenetrePrincipale(Tk):
            
         if self.__count2==0:#Victoire si mot trouvé
             L=[self.__motHazard,'VICTOIRE']
-            self.__Label.config(text = L) 
+            self.__Label.config(text = L)
+            self.__AfficheScore.config(text=f'Score: {self.__score} Saisissez votre Pseudo et appuyez sur Enter')
+            self.__Saisie.config(bg='grey',bd=2)
+            self.bind('<Down>', self.getPseudo)
+    
+    
+    def getPseudo(self,event): 
+        self.__Pseudo = self.__Saisie.get()
+        print(self.__Pseudo)
             
     def triche(self,event):#Mode triche, qui permet en appyant sur le bouton down de revenir en arrière         
         if self.__count>0 : self.__count-=1 #Le count ne dois pas devenir négatif
