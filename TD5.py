@@ -161,7 +161,7 @@ class FenetrePrincipale(Tk):
         
         if self.__count==10 and self.__triche==False :#Défaite au delà de 10 tentatives et sans triche          
            self.__Label.config(text = f'Mot cherché : {self.__motHazard}') 
-           self.__AfficheScore.config(text='Score: 0 PERDU')
+           self.__AfficheScore.config(text='Score: 0 \n PERDU')
            for b in self.__boutons:#On affiche les boutons
                 b.config(state=DISABLED)   
            
@@ -215,6 +215,7 @@ class FenetrePrincipale(Tk):
         self.f1.configure(bg=couleur1)
         self.__Saisie.configure(bg=couleur1)
         self.f3.configure(bg=couleur1)
+        self.__Saisie.config(disabledbackground=couleur1)
         self.DessinPendu.config(bg=couleur2)
         
 
@@ -264,6 +265,7 @@ class FenetrePrincipale(Tk):
         self.__Label.pack(side=TOP,padx=15,pady=10)   
     
         self.__Saisie=Entry(self.f2,bd=0,state=DISABLED)
+        self.__Saisie.config(disabledbackground='lightblue')
         self.__Saisie.config(bg='lightblue')
         self.__Saisie.pack(side=BOTTOM)
         
