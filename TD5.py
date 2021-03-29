@@ -7,6 +7,7 @@ Created on Mon Mar 15 08:08:14 2021
 
 from tkinter import * 
 from random import choice
+import sqlite3
 
 
 ##_______________Classe Forme pour le dessin du pendu___________##
@@ -117,24 +118,26 @@ class FenetrePrincipale(Tk):
     
         
     def NouvellePartie(self):
-        self.__motHazard = choice(self.__mots) # Choix au hasard du mot caché
+        self.motHazard = choice(self.__mots) # Choix au hasard du mot cach
+        print(self.motHazard)
         self.Motcaché=[]
         
-        for i in range(len(self.__motHazard)):#On remplace les lettres du mot par des étoiles
+        for i in range(len(self.motHazard)):#On remplace les lettres du mot par des étoiles
                        self.Motcaché.append('*')
         #Initialisation de l'interface
         self.configure(bg=self.couleur1)
         self.f2.configure(bg=self.couleur1)
         self.f1.configure(bg=self.couleur1)
-        self.__Saisie.configure(bg=self.couleur1)
+        self.Saisie.configure(bg=self.couleur1)
         self.f3.configure(bg=self.couleur1)
-        self.__Saisie.config(disabledbackground=self.couleur1)
+        self.clear()
+        self.Saisie.config(disabledbackground=self.couleur1,bd=0)
         self.DessinPendu.config(bg=self.couleur2)
         
         #Initialisation de tous les artefacts
         self.__Label.config(text = self.Motcaché)#Initialistion des label avec le mot en *
         self.__AfficheScore.config(text = 'Score = 1000',fg='black',bg='white')#Initialisation du Score à 1000
-        self.__Saisie.config(state=NORMAL)
+        self.Saisie.config(state=NORMAL)
         for b in self.__boutons:#On affiche les boutons
             b.config(state=NORMAL)
         for b in self.DessinPendu.ListeForme:#On cache l'image du pendu 
@@ -146,17 +149,17 @@ class FenetrePrincipale(Tk):
         
         
         self.__count=0#initialisation du nombre de tentatives
-        self.__count2=len(self.__motHazard)#Initialisation du nombre de lettres à trouver
-        self.__score=1000
+        self.__count2=len(self.motHazard)#Initialisation du nombre de lettres à trouver
+        self.score=1000
     
     def traitement(self,lettre):#Grise les lettres cliquées        
         LettreCliquée = self.__boutons[ord(lettre)-65]
         LettreCliquée.config(state = DISABLED)
         
         a=False
-        for i in range(len(self.__motHazard)) :#Révélation des lettre du mot
-            if self.__motHazard[i]==lettre:
-                self.Motcaché[i] = self.__motHazard[i]
+        for i in range(len(self.motHazard)) :#Révélation des lettre du mot
+            if self.motHazard[i]==lettre:
+                self.Motcaché[i] = self.motHazard[i]
                 self.__Label.config(text = self.Motcaché)
                 a=True
                 self.__count2-=1
@@ -166,12 +169,12 @@ class FenetrePrincipale(Tk):
             if self.__count>9  and self.__triche==True:
                 self.__count=9
             if self.__triche==False:
-                self.__score-=100 #le score diminue de 100 à chaque mauvaise lettre sans triche
-            self.__AfficheScore.config(text = f'Score: {self.__score}')#diminution du score
-            print(self.__count,self.__score)
+                self.score-=100 #le score diminue de 100 à chaque mauvaise lettre sans triche
+            self.__AfficheScore.config(text = f'Score: {self.score}')#diminution du score
+            print(self.__count,self.score)
         
         if self.__count==10 and self.__triche==False :#Défaite au delà de 10 tentatives et sans triche          
-           self.__Label.config(text = f'Mot cherché : {self.__motHazard}') 
+           self.__Label.config(text = f'Mot cherché : {self.motHazard}') 
            self.__AfficheScore.config(text='Score: 0 \n PERDU')
            for b in self.__boutons:#On affiche les boutons
                 b.config(state=DISABLED)   
@@ -179,28 +182,32 @@ class FenetrePrincipale(Tk):
            
            
         if self.__count2==0:#Victoire si mot trouvé
-            L=[self.__motHazard,'VICTOIRE']
+            L=[self.motHazard,'VICTOIRE']
             self.__Label.config(text = L)
-            self.__AfficheScore.config(text=f'Score: {self.__score} Saisissez votre Pseudo et appuyez sur Enter')
-            self.__Saisie.config(bg='grey',bd=2)
-            self.bind('<Down>', self.getPseudo)
+            self.__AfficheScore.config(text=f'Score: {self.score} \n Saisissez votre Pseudo et appuyez sur Enter')
+            self.Saisie.config(bg='grey',bd=2)
+            self.bind('<Return>', self.getPseudo)
     
     
-    def getPseudo(self,event): 
-        self.__Pseudo = self.__Saisie.get()
-        print(self.__Pseudo)
+    def getPseudo(self,event):
+        joueursDB=Joueurs_bdd(self)
+        self.Pseudo = self.Saisie.get()
+        print(self.Pseudo)
+        joueursDB.AjouteJoueur_partie()
             
+        
+        
     def triche(self,event):#Mode triche, qui permet en appyant sur le bouton down de revenir en arrière         
         if self.__count>0 : self.__count-=1 #Le count ne dois pas devenir négatif
         self.DessinPendu.ListeForme[self.__count].setState("hidden")
         
-        self.__score+=100
-        if self.__score>1000 : self.__score=1000#le score ne peut pas exéder 1000
+        self.score+=100
+        if self.score>1000 : self.score=1000#le score ne peut pas exéder 1000
 
     def SaisieTriche(self,event):
    
         #Vérification du code triche puis activation du mode triche 
-        self.__entree = self.__Saisie.get()
+        self.__entree = self.Saisie.get()
         if self.__entree=='TRICHE':
             self.__triche=True
             self.bind('<Down>', self.triche)#La touche down fait maintenant appel à triche ce qui enlève un trait 
@@ -210,7 +217,7 @@ class FenetrePrincipale(Tk):
             self.f1.configure(bg='black')
             self.f2.configure(bg='black')
             self.f3.configure(bg='black')
-            self.__Saisie=Entry(self.f2,bg='black',fg='red')
+            self.Saisie=Entry(self.f2,bg='black',fg='red')
 
 
     def creerMenuBar(self): # création d'un menu couleur
@@ -231,9 +238,9 @@ class FenetrePrincipale(Tk):
         self.configure(bg=couleur1)
         self.f2.configure(bg=couleur1)
         self.f1.configure(bg=couleur1)
-        self.__Saisie.configure(bg=couleur1)
+        self.Saisie.configure(bg=couleur1)
         self.f3.configure(bg=couleur1)
-        self.__Saisie.config(disabledbackground=couleur1)
+        self.Saisie.config(disabledbackground=couleur1)
         self.DessinPendu.config(bg=couleur2)
         
 
@@ -285,10 +292,10 @@ class FenetrePrincipale(Tk):
         self.__Label.pack(side=TOP,padx=15,pady=10)   
         
         #Saisie de la triche 
-        self.__Saisie=Entry(self.f2,bd=0,state=DISABLED)
-        self.__Saisie.config(disabledbackground='lightblue')
-        self.__Saisie.config(bg='lightblue')
-        self.__Saisie.pack(side=BOTTOM)
+        self.Saisie=Entry(self.f2,bd=0,state=DISABLED)
+        self.Saisie.config(disabledbackground='lightblue')
+        self.Saisie.config(bg='lightblue')
+        self.Saisie.pack(side=BOTTOM)
         
         
         self.f3 = Frame(self)
@@ -313,6 +320,10 @@ class FenetrePrincipale(Tk):
             self.__boutons.append(boutonLettre)
             boutonLettre.grid(row=4,column=a)
             
+        
+    def clear(self):
+        self.Saisie.configure(state = 'normal')
+        self.Saisie.delete(0,'end')
         
         
 
@@ -340,26 +351,49 @@ class Couleur: #Création de la classe couleur
         self.__fenetre.couleur2=self.__couleur2
         
 #____________________ BDD des Joueurs_________________#
-class Joueurs: 
-    def __init__(self):
+class Joueurs_bdd: 
+    def __init__(self,fenetre):
         self.__conn = sqlite3.connect('Joueurs.db')#Le init ouvre l'accès à la base. 
-        self.__curseur = self.__conn.cursor()                
+        self.__curseur = self.__conn.cursor() 
+        self.__fenetre=fenetre
+
 
     def __del__(self):
         self.__conn.close()
         
-    def AjouteJoueur(self):
-        nom = getnom()
-        #ID = int(nom[i]*10**i for i in range(4)) #L'ID du joueur correspond aux quatres premières lettres de son Pseudo
-        pass
-        self.__curseur.execute(f"INSERT INTO Joueurs (PSEUDO,Id_Joueurs) VALUES({nom},{ID}")
-        self.__conn.commit()
+    def AjouteJoueur_partie(self):
+        nom = self.getnom()
+        self.__curseur.execute("SELECT Pseudo FROM Joueurs")
+        self.__listejoueurs= self.__curseur.fetchall()
+        print(self.__listejoueurs)
+        self.__curseur.execute("SELECT IdPartie FROM Partie")
+        self.__listeparties=self.__curseur.fetchall()
+        IDpartie=len(self.__listeparties)
+        pseudo_present=False
+        for tple in self.__listejoueurs:
+            if tple[0]==nom: # on vérifie que le joueur n'existe pas déjà dans la bdd
+                pseudo_present=True
+        if pseudo_present==False:
+            ID=len(self.__listejoueurs)+1 #Création d'un nouvel ID
+            self.__curseur.execute(f"INSERT INTO Joueurs (Pseudo,Id_joueur) VALUES('{nom}','{ID}')")
+            self.__conn.commit()
+            self.__curseur.execute(f"INSERT INTO Partie (IdPartie,Id_Joueur,Score,Mot) VALUES('{IDpartie}','{ID}','{self.__fenetre.score}','{self.__fenetre.motHazard}')")
+            self.__conn.commit()
+        else:
+            self.__curseur.execute(f"SELECT Id_joueur FROM Joueurs WHERE Pseudo=='{nom}'")
+            self.__l= self.__curseur.fetchall()
+            ID=self.__l[0][0]
+            self.__curseur.execute(f"INSERT INTO Partie (IdPartie,Id_Joueur,Score,Mot) VALUES('{IDpartie}','{ID}','{self.__fenetre.score}','{self.__fenetre.motHazard}')")
+            self.__conn.commit()
+        self.__fenetre.Saisie.config(state='disabled')
+        
+    
     
     def getnom(self):
-        return fen.__Pseudo
+        return self.__fenetre.Pseudo
         
     def getinfo(self):
-        return fen.__score, fen.__motHazard
+        return self.__fenetre.score, self.__fenetre.motHazard
 
 if __name__ == '__main__':
 	fen = FenetrePrincipale()  
