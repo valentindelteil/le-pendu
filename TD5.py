@@ -175,9 +175,9 @@ class FenetrePrincipale(Tk):
         
         if self.__count==10 and self.__triche==False :#Défaite au delà de 10 tentatives et sans triche          
            self.__Label.config(text = f'Mot cherché : {self.motHazard}') 
-           self.__AfficheScore.config(text='Score: 0 \n PERDU')
-           for b in self.__boutons:#On affiche les boutons
-                b.config(state=DISABLED)   
+           self.__AfficheScore.config(text='Score: 0 \n PERDU \n Saisissez votre Pseudo et appuyez sur Enter')
+           self.Saisie.config(bg='grey',bd=2)
+           self.bind('<Return>', self.getPseudo) 
            
            
            
