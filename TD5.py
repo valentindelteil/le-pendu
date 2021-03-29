@@ -192,9 +192,7 @@ class FenetrePrincipale(Tk):
     def getPseudo(self,event):
         joueursDB=Joueurs_bdd(self)
         self.Pseudo = self.Saisie.get()
-        print(self.Pseudo)
         joueursDB.AjouteJoueur_partie()
-            
         
         
     def triche(self,event):#Mode triche, qui permet en appyant sur le bouton down de revenir en arrière         
@@ -391,9 +389,7 @@ class Joueurs_bdd:
     
     def getnom(self):
         return self.__fenetre.Pseudo
-        
-    def getinfo(self):
-        return self.__fenetre.score, self.__fenetre.motHazard
+    
 
 if __name__ == '__main__':
 	fen = FenetrePrincipale()  
